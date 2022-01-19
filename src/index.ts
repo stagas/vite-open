@@ -88,6 +88,9 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       force: true,
       host: true,
     },
+    build: {
+      target: 'esnext',
+    },
     plugins: [
       {
         name: 'configure-server',
