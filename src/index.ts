@@ -1,5 +1,6 @@
 import { arg } from 'decarg'
 import qrcode from 'qrcode-terminal'
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 import chalk from '@stagas/chalk'
 import { ViteServer, createViteServer } from './server'
 
@@ -107,6 +108,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
           })
         },
       },
+      viteCommonjs(),
     ],
   })
 
