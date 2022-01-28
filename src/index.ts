@@ -1,3 +1,5 @@
+import * as fs from 'fs'
+import * as path from 'path'
 import { arg } from 'decarg'
 import qrcode from 'qrcode-terminal'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
@@ -79,6 +81,21 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   !quiet && log('starting...')
 
+  // try to alias package name as a top-level module
+  const resolve = { alias: {} }
+  try {
+    const json = fs.readFileSync(path.resolve(path.join(root, 'package.json')), 'utf-8')
+    const pkg = JSON.parse(json)
+    if ('name' in pkg) {
+      !quiet && log('aliasing:', chalk.cyan(pkg.name), '->', chalk.green(root))
+      resolve.alias = {
+        [pkg.name]: root,
+      }
+    }
+  } catch {
+    //
+  }
+
   const server = await createViteServer({
     root,
     logLevel: quiet ? 'silent' : 'info',
@@ -92,6 +109,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     build: {
       target: 'esnext',
     },
+    resolve,
     plugins: [
       {
         name: 'configure-server',
