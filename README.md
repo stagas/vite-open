@@ -35,6 +35,7 @@ vite-open my-file.ts
 
        --root=...            Root directory to serve files from
        --https               Use https
+       --jsx=...             JSX transformer
        --quiet               Quiet output
 
 ## API
@@ -54,7 +55,7 @@ vite-open my-file.ts
 
 ### open
 
-[src/index.ts:79-139](https://github.com/stagas/vite-open/blob/71cc1320d380a16394a76b70e4c5edf1dbc63652/src/index.ts#L79-L139 "Source code on GitHub")
+[src/index.ts:89-187](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/index.ts#L89-L187 "Source code on GitHub")
 
 Open a file in Vite.
 
@@ -66,19 +67,20 @@ Open a file in Vite.
     *   `options.file`  File to open (can be a .js or .ts file)
     *   `options.root`  Root directory to serve files from
     *   `options.https`  Use https
+    *   `options.jsx`  JSX transformer (default: react)
     *   `options.quiet`  Quiet output
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[ViteServer](#viteserver)>** ViteDevServer
 
 ### ViteServer
 
-[src/server.ts:10-17](https://github.com/stagas/vite-open/blob/71cc1320d380a16394a76b70e4c5edf1dbc63652/src/server.ts#L10-L17 "Source code on GitHub")
+[src/server.ts:10-17](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L10-L17 "Source code on GitHub")
 
 ViteServer return object.
 
 #### localAddr
 
-[src/server.ts:12-12](https://github.com/stagas/vite-open/blob/71cc1320d380a16394a76b70e4c5edf1dbc63652/src/server.ts#L12-L12 "Source code on GitHub")
+[src/server.ts:12-12](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L12-L12 "Source code on GitHub")
 
 The local address
 
@@ -86,7 +88,7 @@ Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 #### networkAddr
 
-[src/server.ts:14-14](https://github.com/stagas/vite-open/blob/71cc1320d380a16394a76b70e4c5edf1dbc63652/src/server.ts#L14-L14 "Source code on GitHub")
+[src/server.ts:14-14](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L14-L14 "Source code on GitHub")
 
 The network address
 
@@ -94,7 +96,7 @@ Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 #### vite
 
-[src/server.ts:16-16](https://github.com/stagas/vite-open/blob/71cc1320d380a16394a76b70e4c5edf1dbc63652/src/server.ts#L16-L16 "Source code on GitHub")
+[src/server.ts:16-16](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L16-L16 "Source code on GitHub")
 
 The Vite dev server instance
 
@@ -102,13 +104,13 @@ Type: ViteDevServer
 
 ### createViteServer
 
-[src/server.ts:25-51](https://github.com/stagas/vite-open/blob/71cc1320d380a16394a76b70e4c5edf1dbc63652/src/server.ts#L25-L51 "Source code on GitHub")
+[src/server.ts:25-51](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L25-L51 "Source code on GitHub")
 
 Creates a vite dev server instance.
 
 #### Parameters
 
-*   `viteConfig` **ViteConfig** Vite configuration.&#x20;(optional, default `{}`)
+*   `viteConfig` **ViteConfig** Vite configuration. (optional, default `{}`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[ViteServer](#viteserver)>** ViteServer
 
