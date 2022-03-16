@@ -8,12 +8,10 @@
     "files": true
   },
   "include": [
+    "example",
     "src",
+    "test",
     "types"
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
   ],
   "compilerOptions": {
     "outDir": "dist/cjs",
@@ -23,6 +21,7 @@
       "ESNext"
     ],
     "moduleResolution": "node",
+    "useDefineForClassFields": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
@@ -30,11 +29,10 @@
     "inlineSources": true,
     "declaration": true,
     "sourceMap": true,
+    "allowJs": true,
     "module": "commonjs",
     "target": "esnext",
-    "jsx": "react",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment",
+    "jsx": "preserve",
     "strict": true
   }
 }

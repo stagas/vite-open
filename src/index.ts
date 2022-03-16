@@ -27,6 +27,10 @@ export class Options {
 
   @arg('--quiet', 'Quiet output')
   quiet = false
+
+  responses: Record<string, { type: string; content: string }> = {}
+
+  viteOptions: Partial<ViteConfig> = {}
 }
 
 const html = (name: string) => /* html */ `<!DOCTYPE html>
@@ -148,8 +152,15 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       }),
       {
         name: 'configure-server',
-        configureServer(server) {
+        configureServer(server: ViteDevServer) {
           server.middlewares.use((req, res, next) => {
+            if (req.url! in responses) {
+              const { type, content } = responses[req.url!]
+              res.statusCode = 200
+              res.setHeader('Content-Type', type)
+              res.end(content)
+              return
+            }
             if (req.url === '/') {
               res.statusCode = 200
               server.transformIndexHtml(req.url, html(file)).then(result => {
@@ -164,6 +175,8 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       viteCommonjs(),
     ],
   })
+
+  const server = await createViteServer(config)
 
   // logs
   !quiet && log('started - serving file:', chalk.yellow(file))

@@ -52,7 +52,7 @@ describe('cli', () => {
       const controller = new AbortController()
       const { signal } = controller
 
-      let stdout
+      let stdout: any
 
       const child = exec(
         'node -r ts-node/register ../src/cli.ts fixture.ts',
