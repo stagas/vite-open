@@ -2,6 +2,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { arg } from 'decarg'
 import qrcode from 'qrcode-terminal'
+import { InlineConfig as ViteConfig, ViteDevServer, mergeConfig } from 'vite'
+import babel from 'vite-plugin-babel-dev'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 import chalk from '@stagas/chalk'
 import { ViteServer, createViteServer } from './server'
@@ -19,6 +21,9 @@ export class Options {
 
   @arg('--https', 'Use https')
   https = false
+
+  @arg('--jsx', 'JSX transformer')
+  jsx = 'react'
 
   @arg('--quiet', 'Quiet output')
   quiet = false
@@ -73,16 +78,20 @@ const html = (name: string) => /* html */ `<!DOCTYPE html>
  * @param options.file File to open (can be a .js or .ts file)
  * @param options.root Root directory to serve files from
  * @param options.https Use https
+ * @param options.jsx JSX transformer (default: react)
  * @param options.quiet Quiet output
  * @return ViteDevServer
  */
 export const open = async (options: Partial<Options>): Promise<ViteServer> => {
-  const { log, root, quiet, file } = (options = Object.assign(new Options(), options))
+  const { log, root, quiet, file, responses, jsx } = (options = Object.assign(
+    new Options(),
+    options
+  ))
 
   !quiet && log('starting...')
 
   // try to alias package name as a top-level module
-  const resolve = { alias: {} }
+  const resolve: any = { alias: {} }
   try {
     const json = fs.readFileSync(path.resolve(path.join(root, 'package.json')), 'utf-8')
     const pkg = JSON.parse(json)
@@ -96,7 +105,9 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     //
   }
 
-  const server = await createViteServer({
+  resolve.alias.react = jsx
+
+  const config = mergeConfig(options.viteOptions ?? {}, {
     root,
     logLevel: quiet ? 'silent' : 'info',
     clearScreen: false,
@@ -111,6 +122,30 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     },
     resolve,
     plugins: [
+      babel({
+        babelConfig: {
+          cwd: __dirname,
+          plugins: [
+            '@babel/plugin-proposal-class-properties',
+            [
+              '@babel/plugin-transform-react-jsx',
+              {
+                throwIfNamespace: false, // defaults to true
+                runtime: 'automatic', // defaults to classic
+                importSource: jsx, // defaults to react
+              },
+            ],
+            [
+              '@babel/plugin-transform-typescript',
+              {
+                isTSX: true,
+                allExtensions: true,
+              },
+            ],
+          ],
+        },
+        filter: /\.[jt]sx$/,
+      }),
       {
         name: 'configure-server',
         configureServer(server) {
