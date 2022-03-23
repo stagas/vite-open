@@ -131,7 +131,6 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
           cwd: __dirname,
           sourceMaps: 'inline',
           plugins: [
-            '@babel/plugin-proposal-class-properties',
             [
               '@babel/plugin-transform-react-jsx',
               {
