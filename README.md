@@ -55,7 +55,7 @@ vite-open my-file.ts
 
 ### open
 
-[src/index.ts:89-187](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/index.ts#L89-L187 "Source code on GitHub")
+[src/index.ts:90-188](https://github.com/stagas/vite-open/blob/2b5f1ba20fb0f2c1e3d5e6e413a9749980a0038a/src/index.ts#L90-L188 "Source code on GitHub")
 
 Open a file in Vite.
 
@@ -74,13 +74,13 @@ Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 ### ViteServer
 
-[src/server.ts:10-17](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L10-L17 "Source code on GitHub")
+[src/server.ts:10-17](https://github.com/stagas/vite-open/blob/2b5f1ba20fb0f2c1e3d5e6e413a9749980a0038a/src/server.ts#L10-L17 "Source code on GitHub")
 
 ViteServer return object.
 
 #### localAddr
 
-[src/server.ts:12-12](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L12-L12 "Source code on GitHub")
+[src/server.ts:12-12](https://github.com/stagas/vite-open/blob/2b5f1ba20fb0f2c1e3d5e6e413a9749980a0038a/src/server.ts#L12-L12 "Source code on GitHub")
 
 The local address
 
@@ -88,7 +88,7 @@ Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 #### networkAddr
 
-[src/server.ts:14-14](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L14-L14 "Source code on GitHub")
+[src/server.ts:14-14](https://github.com/stagas/vite-open/blob/2b5f1ba20fb0f2c1e3d5e6e413a9749980a0038a/src/server.ts#L14-L14 "Source code on GitHub")
 
 The network address
 
@@ -96,7 +96,7 @@ Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 #### vite
 
-[src/server.ts:16-16](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L16-L16 "Source code on GitHub")
+[src/server.ts:16-16](https://github.com/stagas/vite-open/blob/2b5f1ba20fb0f2c1e3d5e6e413a9749980a0038a/src/server.ts#L16-L16 "Source code on GitHub")
 
 The Vite dev server instance
 
@@ -104,7 +104,7 @@ Type: ViteDevServer
 
 ### createViteServer
 
-[src/server.ts:25-51](https://github.com/stagas/vite-open/blob/e83331a9a79b5d0e26b2e7c3a851636a79a19014/src/server.ts#L25-L51 "Source code on GitHub")
+[src/server.ts:25-49](https://github.com/stagas/vite-open/blob/2b5f1ba20fb0f2c1e3d5e6e413a9749980a0038a/src/server.ts#L25-L49 "Source code on GitHub")
 
 Creates a vite dev server instance.
 
