@@ -129,6 +129,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       babel({
         babelConfig: {
           cwd: __dirname,
+          sourceMaps: 'inline',
           plugins: [
             '@babel/plugin-proposal-class-properties',
             [
