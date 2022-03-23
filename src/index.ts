@@ -1,12 +1,12 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import { arg } from 'decarg'
-import qrcode from 'qrcode-terminal'
-import { InlineConfig as ViteConfig, ViteDevServer, mergeConfig } from 'vite'
-import babel from 'vite-plugin-babel-dev'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 import chalk from '@stagas/chalk'
-import { ViteServer, createViteServer } from './server'
+import { arg } from 'decarg'
+import * as fs from 'fs'
+import * as path from 'path'
+import qrcode from 'qrcode-terminal'
+import { InlineConfig as ViteConfig, mergeConfig, ViteDevServer } from 'vite'
+import babel from 'vite-plugin-babel-dev'
+import { createViteServer, ViteServer } from './server'
 
 const defaultLog = (...args: unknown[]) => console.log(chalk.blueBright('[vite-open]'), ...args)
 
@@ -33,7 +33,8 @@ export class Options {
   viteOptions: Partial<ViteConfig> = {}
 }
 
-const html = (name: string) => /* html */ `<!DOCTYPE html>
+const html = (name: string) =>
+  /* html */ `<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -89,7 +90,7 @@ const html = (name: string) => /* html */ `<!DOCTYPE html>
 export const open = async (options: Partial<Options>): Promise<ViteServer> => {
   const { log, root, quiet, file, responses, jsx } = (options = Object.assign(
     new Options(),
-    options
+    options,
   ))
 
   !quiet && log('starting...')

@@ -1,12 +1,17 @@
 {
   "files.exclude": {
+    ".gitattributes": true,
+    ".gitignore": true,
     ".husky": true,
     ".npmrc": true,
-    ".gitignore": true,
-    ".gitattributes": true,
-    ".prettierignore": true,
+    ".swc": true,
+    ".vscode": true,
     "coverage": true
   },
   "todo-tree.tree.scanMode": "workspace only",
-  "npm-scripts.showStartNotification": false
+  "npm-scripts.showStartNotification": false,
+  "explorer.experimental.fileNesting.enabled": true,
+  "explorer.experimental.fileNesting.patterns": {
+    "package.json": ".eslintrc.js, .pull-configs.js, dprint.json, jest.config.js, tsconfig.dist.json, tsconfig.json, web-test-runner.config.js"
+  }
 }
