@@ -1,6 +1,6 @@
 import type { AddressInfo } from 'net'
 import runningAt from 'running-at'
-import { ViteDevServer, createServer, mergeConfig } from 'vite'
+import { createServer, mergeConfig, ViteDevServer } from 'vite'
 
 type ViteConfig = Parameters<typeof createServer>[0]
 
@@ -35,13 +35,11 @@ export const createViteServer = async (viteConfig: ViteConfig = {}): Promise<Vit
 
   const addressInfo = viteDevServer.httpServer!.address() as AddressInfo
 
-  const localAddr = `${viteDevServer.config.server.https ? 'https' : 'http'}://${
-    addressInfo.address
-  }:${addressInfo.port}`
+  const localAddr = `${
+    viteDevServer.config.server.https ? 'https' : 'http'
+  }://${addressInfo.address}:${addressInfo.port}`
 
-  const networkAddr = `${viteDevServer.config.server.https ? 'https' : 'http'}://${
-    runningAt().ip
-  }:${addressInfo.port}`
+  const networkAddr = `${viteDevServer.config.server.https ? 'https' : 'http'}://${runningAt().ip}:${addressInfo.port}`
 
   return {
     localAddr,

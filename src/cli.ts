@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { decarg } from 'decarg'
-import { Options, open } from '.'
+import { open, Options } from '.'
 
 const options = decarg(new Options())!
 

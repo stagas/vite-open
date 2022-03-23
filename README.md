@@ -13,7 +13,7 @@ open a file in a vite dev server
  · <a href="https://github.com/stagas/vite-open/issues">   🖐️ <strong>Help</strong></a>
 </p>
 
-***
+---
 
 ## Install
 
@@ -44,14 +44,14 @@ vite-open my-file.ts
 
 #### Table of Contents
 
-*   [open](#open)
-    *   [Parameters](#parameters)
-*   [ViteServer](#viteserver)
-    *   [localAddr](#localaddr)
-    *   [networkAddr](#networkaddr)
-    *   [vite](#vite)
-*   [createViteServer](#createviteserver)
-    *   [Parameters](#parameters-1)
+- [open](#open)
+  - [Parameters](#parameters)
+- [ViteServer](#viteserver)
+  - [localAddr](#localaddr)
+  - [networkAddr](#networkaddr)
+  - [vite](#vite)
+- [createViteServer](#createviteserver)
+  - [Parameters](#parameters-1)
 
 ### open
 
@@ -61,14 +61,14 @@ Open a file in Vite.
 
 #### Parameters
 
-*   `options` **Partial\<Options>** Open options
+- `options` **Partial\<Options>** Open options
 
-    *   `options.log`  Log function
-    *   `options.file`  File to open (can be a .js or .ts file)
-    *   `options.root`  Root directory to serve files from
-    *   `options.https`  Use https
-    *   `options.jsx`  JSX transformer (default: react)
-    *   `options.quiet`  Quiet output
+  - `options.log` Log function
+  - `options.file` File to open (can be a .js or .ts file)
+  - `options.root` Root directory to serve files from
+  - `options.https` Use https
+  - `options.jsx` JSX transformer (default: react)
+  - `options.quiet` Quiet output
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[ViteServer](#viteserver)>** ViteDevServer
 
@@ -110,7 +110,7 @@ Creates a vite dev server instance.
 
 #### Parameters
 
-*   `viteConfig` **ViteConfig** Vite configuration. (optional, default `{}`)
+- `viteConfig` **ViteConfig** Vite configuration. (optional, default `{}`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[ViteServer](#viteserver)>** ViteServer
 

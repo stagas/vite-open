@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 import { stderr, stdout } from 'stdout-stderr'
-import { Options, open } from '../src'
+import { open, Options } from '../src'
 
 const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -59,7 +59,7 @@ describe('cli', () => {
         { cwd: __dirname, signal, encoding: 'utf8' },
         (_error, _stdout) => {
           stdout = _stdout
-        }
+        },
       )
 
       child.once('close', () => {
