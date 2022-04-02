@@ -129,7 +129,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     plugins: [
       babel({
         babelConfig: {
-          cwd: __dirname,
+          cwd: root,
           sourceMaps: 'inline',
           plugins: [
             [
@@ -138,6 +138,8 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
                 throwIfNamespace: false, // defaults to true
                 runtime: 'automatic', // defaults to classic
                 importSource: jsx, // defaults to react
+                useBuiltIns: true,
+                useSpread: true,
               },
             ],
             [
@@ -145,6 +147,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
               {
                 isTSX: true,
                 allExtensions: true,
+                allowDeclareFields: true,
               },
             ],
           ],
