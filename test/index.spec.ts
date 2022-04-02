@@ -59,7 +59,7 @@ describe('cli', () => {
         { cwd: __dirname, signal, encoding: 'utf8' },
         (_error, _stdout) => {
           stdout = _stdout
-        },
+        }
       )
 
       child.once('close', () => {

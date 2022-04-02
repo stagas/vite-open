@@ -90,7 +90,7 @@ const html = (name: string) =>
 export const open = async (options: Partial<Options>): Promise<ViteServer> => {
   const { log, root, quiet, file, responses, jsx } = (options = Object.assign(
     new Options(),
-    options,
+    options
   ))
 
   !quiet && log('starting...')
