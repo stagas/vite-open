@@ -6,6 +6,7 @@ import * as path from 'path'
 import qrcode from 'qrcode-terminal'
 import { InlineConfig as ViteConfig, mergeConfig, ViteDevServer } from 'vite'
 import babel from 'vite-plugin-babel-dev'
+import mdPlugin, { Mode } from 'vite-plugin-markdown'
 import { createViteServer, ViteServer } from './server'
 
 const defaultLog = (...args: unknown[]) => console.log(chalk.blueBright('[vite-open]'), ...args)
@@ -33,7 +34,7 @@ export class Options {
   viteOptions: Partial<ViteConfig> = {}
 }
 
-const html = (name: string) =>
+const html = (title: string, name: string) =>
   /* html */ `<!DOCTYPE html>
 <html>
   <head>
@@ -44,7 +45,7 @@ const html = (name: string) =>
       href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='47.2' r='34'%0Afill='transparent' stroke='%23fff' stroke-width='7.5' /%3E%3C/svg%3E"
       type="image/svg+xml"
     />
-    <title>${name}</title>
+    <title>${title}</title>
     <style>
       html, body {
         margin: 0;
@@ -112,6 +113,24 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   resolve.alias.react = jsx
 
+  // support opening markdown files with github flavored markdown
+  const isMarkdown = file.endsWith('.md')
+  if (isMarkdown) {
+    responses['/_markdown'] = {
+      type: 'application/javascript',
+      content: `
+        import '/@fs${require.resolve('github-markdown-css')}'
+        import { html } from '/${file}'
+
+        document.body.classList.add('markdown-body')
+        document.body.style = 'max-width: 830px; margin: 0 auto;'
+        document.body.innerHTML = html
+      `,
+    }
+  }
+
+  const entryFile = isMarkdown ? '_markdown' : file
+
   const config = mergeConfig(options.viteOptions ?? {}, {
     root,
     logLevel: quiet ? 'silent' : 'info',
@@ -121,12 +140,19 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       cors: true,
       force: true,
       host: true,
+      fs: {
+        allow: [
+          path.resolve(root),
+          path.resolve(path.dirname(require.resolve('github-markdown-css'))),
+        ],
+      },
     },
     build: {
       target: 'esnext',
     },
     resolve,
     plugins: [
+      mdPlugin({ mode: [Mode.HTML] }),
       babel({
         babelConfig: {
           cwd: root,
@@ -165,9 +191,17 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
               res.end(content)
               return
             }
+            if (isMarkdown && req.url === '/' + file) {
+              server.transformRequest(req.url).then(result => {
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'application/javascript')
+                res.end(result!.code)
+              })
+              return
+            }
             if (req.url === '/') {
               res.statusCode = 200
-              server.transformIndexHtml(req.url, html(file)).then(result => {
+              server.transformIndexHtml(req.url, html(file, entryFile)).then(result => {
                 res.end(result)
               })
               return
