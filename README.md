@@ -20,7 +20,7 @@ Opens a file in a Vite dev server.
 
 <p></p>
 <p>
-<img srcset="cli.png 1.75x" src={screenshot} style="max-width:100%" />
+<img width="579.4285714285714" src="cli.png" />
 </p>
 
 ## API
