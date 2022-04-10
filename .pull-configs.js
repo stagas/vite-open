@@ -15,22 +15,27 @@ merge('package.json', (prev, next) => {
   prev.scripts = next.scripts
   prev.files = next.files
   sort(assign(prev.devDependencies, next.devDependencies))
+
+  // deprecated
+  delete prev.devDependencies['@stagas/documentation-fork']
 })
 replace('.gitignore')
 replace('.eslintrc.js')
-// replace('.pull-configs.js')
+replace('.pull-configs.js')
 replace('.swcrc')
 replace('dprint.json')
-// replace('jest.config.js')
+replace('jest.config.js')
 replace('tsconfig.json')
 replace('tsconfig.dist.json')
 replace('web-test-runner.config.js')
+replace('LICENSE')
 
 const deprecated = [
   '.vscode/extensions.json',
   '.vscode',
   '.prettierrc',
   '.prettierignore',
+  'example/tsconfig.json',
   'vite.config.js',
 ]
 deprecated.forEach(x => {

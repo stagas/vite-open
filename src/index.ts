@@ -14,11 +14,11 @@ const defaultLog = (...args: unknown[]) => console.log(chalk.blueBright('[vite-o
 export class Options {
   log = defaultLog
 
-  @arg('<file>', 'File to open (can be a .js or .ts file)')
+  @arg('<file>', 'File to open (.js, .jsx, .ts, .tsx, .md)')
   file!: string
 
   @arg('--root', 'Root directory to serve files from')
-  root = process.cwd()
+  root = '.'
 
   @arg('--https', 'Use https')
   https = false
