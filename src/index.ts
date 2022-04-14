@@ -113,23 +113,29 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   resolve.alias.react = jsx
 
+  let entryContents: string
+
   // support opening markdown files with github flavored markdown
   const isMarkdown = file.endsWith('.md')
   if (isMarkdown) {
-    responses['/_markdown'] = {
-      type: 'application/javascript',
-      content: `
+    entryContents = `
         import '/@fs${require.resolve('github-markdown-css')}'
         import { html } from '/${file}'
 
         document.body.classList.add('markdown-body')
         document.body.style = 'max-width: 830px; margin: 0 auto;'
         document.body.innerHTML = html
-      `,
-    }
+      `
+  } else {
+    entryContents = `
+      import '/${file}'
+    `
   }
 
-  const entryFile = isMarkdown ? '_markdown' : file
+  responses['/_entry'] = {
+    type: 'application/javascript',
+    content: entryContents,
+  }
 
   const config = mergeConfig(options.viteOptions ?? {}, {
     root,
@@ -201,7 +207,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
             }
             if (req.url === '/') {
               res.statusCode = 200
-              server.transformIndexHtml(req.url, html(file, entryFile)).then(result => {
+              server.transformIndexHtml(req.url, html(file, '_entry')).then(result => {
                 res.end(result)
               })
               return
