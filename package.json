@@ -53,7 +53,7 @@
     "prepack": "npm run clean && npm run build && (npm run build:dist || echo unable to bundle)",
     "prepack:dry": "npm pack --dry-run",
     "prepush": "npm run lint && npm run test",
-    "prepare": "husky install && node .pull-configs.js"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@n1kk/intspector": "1.0.2",
@@ -89,17 +89,17 @@
     "wtr-plugin-vite": "^0.0.1"
   },
   "dependencies": {
-    "@babel/plugin-transform-react-jsx": "^7.17.3",
-    "@babel/plugin-transform-typescript": "^7.16.8",
-    "@originjs/vite-plugin-commonjs": "^1.0.3",
-    "@stagas/chalk": "^5.0.0",
+    "@babel/plugin-transform-react-jsx": "7.17.3",
+    "@babel/plugin-transform-typescript": "7.16.8",
+    "@originjs/vite-plugin-commonjs": "1.0.3",
+    "@stagas/chalk": "5.0.0",
     "decarg": "^1.2.0",
-    "github-markdown-css": "^5.1.0",
-    "qrcode-terminal": "^0.12.0",
-    "running-at": "^0.3.22",
-    "vite": "^2.8.6",
-    "vite-plugin-babel-dev": "^1.0.2",
-    "vite-plugin-markdown": "^2.0.2"
+    "github-markdown-css": "5.1.0",
+    "qrcode-terminal": "0.12.0",
+    "running-at": "0.3.22",
+    "vite": "2.8.6",
+    "vite-plugin-babel-dev": "1.0.2",
+    "vite-plugin-markdown": "2.0.2"
   },
   "trustedDependencies": [
     "@stagas/jest-node-exports-resolver",
