@@ -3,7 +3,7 @@
   "author": "stagas",
   "short": "stagas/vite-open",
   "description": "Opens a file in a Vite dev server.",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -57,7 +57,6 @@
   },
   "devDependencies": {
     "@n1kk/intspector": "1.0.2",
-    "@rollup/plugin-commonjs": "21.0.3",
     "@stagas/jest-node-exports-resolver": "1.1.5-require-basedir-2",
     "@swc-node/jest": "1.4.3",
     "@swc/cli": "0.1.56",
@@ -68,7 +67,6 @@
     "@types/qrcode-terminal": "0.12.0",
     "@typescript-eslint/eslint-plugin": "5.16.0",
     "@typescript-eslint/parser": "5.16.0",
-    "@web/dev-server-rollup": "0.3.15",
     "@web/test-runner": "0.13.27",
     "bunzee": "^0.0.1",
     "chokidar": "3.5.3",
@@ -88,7 +86,7 @@
     "ts-node": "10.7.0",
     "typescript": "4.6.3",
     "vite-open": "^1.4.2",
-    "vite-web-test-runner-plugin": "0.1.0"
+    "wtr-plugin-vite": "^0.0.1"
   },
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.17.3",
@@ -108,7 +106,8 @@
     "bunzee",
     "decarg",
     "pull-configs",
-    "vite-open"
+    "vite-open",
+    "wtr-plugin-vite"
   ],
   "types": "./dist/types/index.d.ts"
 }
