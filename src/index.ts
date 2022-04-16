@@ -119,13 +119,13 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
   const isMarkdown = file.endsWith('.md')
   if (isMarkdown) {
     entryContents = `
-        import '/@fs${require.resolve('github-markdown-css')}'
-        import { html } from '/${file}'
+      import '/@fs${require.resolve('github-markdown-css')}'
+      import { html } from '/${file}'
 
-        document.body.classList.add('markdown-body')
-        document.body.style = 'max-width: 830px; margin: 0 auto;'
-        document.body.innerHTML = html
-      `
+      document.body.classList.add('markdown-body')
+      document.body.style = 'max-width: 830px; margin: 0 auto;'
+      document.body.innerHTML = html
+    `
   } else {
     entryContents = `
       import '/${file}'
@@ -148,7 +148,8 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       host: true,
       fs: {
         allow: [
-          path.resolve(root),
+          // allow parent enables module links to work
+          path.resolve(root, '..'),
           path.resolve(path.dirname(require.resolve('github-markdown-css'))),
         ],
       },
