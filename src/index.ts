@@ -96,24 +96,57 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   !quiet && log('starting...')
 
-  // try to alias package name as a top-level module
-  const resolve: any = { alias: {} }
-  try {
-    const json = fs.readFileSync(path.resolve(path.join(root, 'package.json')), 'utf-8')
-    const pkg = JSON.parse(json)
-    if ('name' in pkg) {
-      !quiet && log('aliasing:', chalk.cyan(pkg.name), '->', chalk.green(root))
-      resolve.alias = {
-        [pkg.name]: root,
-      }
-    }
-  } catch {
-    //
+  const resolve: ViteConfig['resolve'] = {
+    alias: {
+      react: jsx,
+    },
+  }
+  const optimizeDeps: ViteConfig['optimizeDeps'] = {
+    exclude: [],
   }
 
-  resolve.alias.react = jsx
+  const aliasPackage = () => {
+    try {
+      const json = fs.readFileSync(path.resolve(path.join(root, 'package.json')), 'utf-8')
 
-  let entryContents: string
+      // try to alias package name as a top-level module
+      const pkg = JSON.parse(json)
+      if ('name' in pkg) {
+        !quiet && log('aliasing:', chalk.cyan(pkg.name), '->', chalk.green(root))
+        ;(resolve.alias as any)[pkg.name] = root
+      }
+    } catch {}
+  }
+
+  aliasPackage()
+
+  const visitedPackages = new Set()
+  const excludeLinks = (root: string) => {
+    if (visitedPackages.has(root)) return
+    visitedPackages.add(root)
+
+    try {
+      const json = fs.readFileSync(path.resolve(path.join(root, 'package.json')), 'utf-8')
+      const pkg = JSON.parse(json)
+      for (
+        const [name, version] of [
+          ...Object.entries(pkg.dependencies),
+          ...Object.entries(pkg.devDependencies),
+        ] as [string, string][]
+      ) {
+        if (version.startsWith('file:')) {
+          if (!optimizeDeps.exclude!.includes(name)) {
+            optimizeDeps.exclude!.push(name)
+            const target = path.resolve(root, version.replace('file:', ''))
+            excludeLinks(target)
+          }
+        }
+      }
+    } catch {}
+  }
+  excludeLinks(root)
+
+  let entryContents = ''
 
   // support opening markdown files with github flavored markdown
   const isMarkdown = file.endsWith('.md')
@@ -141,6 +174,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     root,
     logLevel: quiet ? 'silent' : 'info',
     clearScreen: false,
+    optimizeDeps,
     server: {
       https: options.https,
       cors: true,
