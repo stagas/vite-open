@@ -185,6 +185,10 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       cors: true,
       force: true,
       host: true,
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+      },
       fs: {
         allow: [
           // allow parent enables module links to work
@@ -230,6 +234,9 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
         name: 'configure-server',
         configureServer(server: ViteDevServer) {
           server.middlewares.use((req, res, next) => {
+            res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
+            res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
+
             if (req.url! in responses) {
               const { type, content } = responses[req.url!]
               res.statusCode = 200
