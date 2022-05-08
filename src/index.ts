@@ -159,6 +159,11 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       document.body.style = 'max-width: 830px; margin: 0 auto;'
       document.body.innerHTML = html
     `
+  } else if (file.endsWith('.html')) {
+    responses['/'] = {
+      type: 'text/html',
+      content: fs.readFileSync(file, 'utf-8'),
+    }
   } else {
     entryContents = `
       import '/${file}'
