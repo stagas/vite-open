@@ -209,7 +209,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
           sourceMaps: 'inline',
           plugins: [
             [
-              '@babel/plugin-transform-react-jsx',
+              require('@babel/plugin-transform-react-jsx'),
               {
                 throwIfNamespace: false, // defaults to true
                 runtime: 'automatic', // defaults to classic
@@ -219,7 +219,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
               },
             ],
             [
-              '@babel/plugin-transform-typescript',
+              require('@babel/plugin-transform-typescript'),
               {
                 isTSX: true,
                 allExtensions: true,
