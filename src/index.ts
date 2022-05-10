@@ -26,6 +26,9 @@ export class Options {
   @arg('--jsx', 'JSX transformer')
   jsx = 'react'
 
+  @arg('--no-open', 'Do not open browser on startup')
+  noOpen = false
+
   @arg('--quiet', 'Quiet output')
   quiet = false
 
@@ -85,6 +88,7 @@ const html = (title: string, name: string) =>
  * @param options.root Root directory to serve files from
  * @param options.https Use https
  * @param options.jsx JSX transformer (default: react)
+ * @param options.noOpen Do not open browser on startup
  * @param options.quiet Quiet output
  * @return ViteDevServer
  */
@@ -182,8 +186,9 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     optimizeDeps,
     server: {
       https: options.https,
-      cors: true,
+      open: !options.noOpen,
       force: true,
+      cors: true,
       host: true,
       headers: {
         'Cross-Origin-Opener-Policy': 'same-origin',
@@ -265,7 +270,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       },
       viteCommonjs(),
     ],
-  })
+  } as ViteConfig)
 
   const server = await createViteServer(config)
 
