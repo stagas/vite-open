@@ -277,7 +277,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
   // logs
   !quiet && log('started - serving file:', chalk.yellow(file))
   !quiet && server.vite.printUrls()
-  !quiet && qrcode.generate(server.networkAddr, { small: true })
+  !quiet && server.networkAddr && qrcode.generate(server.networkAddr, { small: true })
 
   return server
 }

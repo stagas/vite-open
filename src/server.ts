@@ -39,7 +39,10 @@ export const createViteServer = async (viteConfig: ViteConfig = {}): Promise<Vit
     viteDevServer.config.server.https ? 'https' : 'http'
   }://${addressInfo.address}:${addressInfo.port}`
 
-  const networkAddr = `${viteDevServer.config.server.https ? 'https' : 'http'}://${runningAt().ip}:${addressInfo.port}`
+  let networkAddr = ''
+  try {
+    networkAddr = `${viteDevServer.config.server.https ? 'https' : 'http'}://${runningAt().ip}:${addressInfo.port}`
+  } catch {}
 
   return {
     localAddr,
