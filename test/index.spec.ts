@@ -33,7 +33,7 @@ describe('open(file)', () => {
   })
 
   it('starts a vite dev server and serves the file', async () => {
-    const server = await open({ file: 'fixture.ts', root: __dirname })
+    const server = await open({ file: 'fixture.ts', root: __dirname, noOpen: true })
 
     // wait for stdout to be filled
     await pause(1000)
@@ -55,7 +55,7 @@ describe('cli', () => {
       let stdout: any
 
       const child = exec(
-        'node -r ts-node/register ../src/cli.ts fixture.ts',
+        'node -r ts-node/register ../src/cli.ts fixture.ts --no-open',
         { cwd: __dirname, signal, encoding: 'utf8' },
         (_error, _stdout) => {
           stdout = _stdout
