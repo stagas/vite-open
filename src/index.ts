@@ -5,7 +5,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import qrcode from 'qrcode-terminal'
 import { InlineConfig as ViteConfig, mergeConfig, ViteDevServer } from 'vite'
-import babel from 'vite-plugin-babel-dev'
+import babel from 'vite-plugin-babel'
 import mdPlugin, { Mode } from 'vite-plugin-markdown'
 import { createViteServer, ViteServer } from './server'
 
@@ -211,6 +211,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       babel({
         babelConfig: {
           cwd: root,
+          sourceMaps: 'inline',
           plugins: [
             [
               require('@babel/plugin-transform-react-jsx'),
