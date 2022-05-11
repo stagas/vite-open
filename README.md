@@ -1,5 +1,5 @@
 <h1>
-vite-open <a href="https://npmjs.org/package/vite-open"><img src="https://img.shields.io/badge/npm-v2.0.1-F00.svg?colorA=000"/></a> <a href="src"><img src="https://img.shields.io/badge/loc-271-FFF.svg?colorA=000"/></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F0B.svg?colorA=000"/></a>
+vite-open <a href="https://npmjs.org/package/vite-open"><img src="https://img.shields.io/badge/npm-v2.0.2-F00.svg?colorA=000"/></a> <a href="src"><img src="https://img.shields.io/badge/loc-272-FFF.svg?colorA=000"/></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F0B.svg?colorA=000"/></a>
 </h1>
 
 <p></p>
@@ -39,7 +39,7 @@ Opens a file in a Vite dev server.
 - [qrcode-terminal](https://npmjs.org/package/qrcode-terminal) by [gtanner](https://github.com/gtanner) &ndash; QRCodes, in the terminal
 - [running-at](https://npmjs.org/package/running-at) by [Maximilian Schiller](https://github.com/BetaHuhn) &ndash; Get local and network ip address
 - [vite](https://npmjs.org/package/vite) by [Evan You](https://github.com/vitejs) &ndash; Native-ESM powered web dev build tool
-- [vite-plugin-babel-dev](https://npmjs.org/package/vite-plugin-babel-dev) by [Miłosz Mandowski](https://github.com/owlsdepartment) &ndash; Runs babel during dev serve in Vite
+- [vite-plugin-babel](https://npmjs.org/package/vite-plugin-babel) by [Miłosz Mandowski](https://github.com/owlsdepartment) &ndash; Runs Babel in Vite during all commands
 - [vite-plugin-markdown](https://npmjs.org/package/vite-plugin-markdown) by [Kengo Hamasaki](https://github.com/hmsk) &ndash; Import markdown files in vite
 
 ## Contributing
