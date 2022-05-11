@@ -211,7 +211,6 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       babel({
         babelConfig: {
           cwd: root,
-          sourceMaps: 'inline',
           plugins: [
             [
               require('@babel/plugin-transform-react-jsx'),
