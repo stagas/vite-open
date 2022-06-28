@@ -1,4 +1,4 @@
-import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
 import chalk from '@stagas/chalk'
 import { arg } from 'decarg'
 import * as fs from 'fs'
@@ -276,7 +276,8 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
           })
         },
       },
-      viteCommonjs(),
+
+      commonjs({ transformMixedEsModules: true }),
     ],
   } as ViteConfig)
 

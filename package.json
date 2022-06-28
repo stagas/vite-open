@@ -97,7 +97,7 @@
     "@babel/plugin-proposal-decorators": "7.18.2",
     "@babel/plugin-transform-react-jsx": "7.17.3",
     "@babel/plugin-transform-typescript": "7.16.8",
-    "@originjs/vite-plugin-commonjs": "1.0.3",
+    "@rollup/plugin-commonjs": "21.1.0",
     "@stagas/chalk": "5.0.0",
     "decarg": "^1.2.0",
     "github-markdown-css": "5.1.0",
