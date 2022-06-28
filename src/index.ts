@@ -32,6 +32,12 @@ export class Options {
   @arg('--no-open', 'Do not open browser on startup')
   noOpen = false
 
+  @arg('--debugging', 'Debugging pattern')
+  debugging = ''
+
+  @arg('--debugging-this', 'Enable debugging for current package')
+  debuggingThis = false
+
   @arg('--quiet', 'Quiet output')
   quiet = false
 
@@ -92,11 +98,13 @@ const html = (title: string, name: string) =>
  * @param options.https Use https
  * @param options.jsx JSX transformer (default: react)
  * @param options.noOpen Do not open browser on startup
+ * @param options.debugging Debugging pattern
+ * @param options.debuggingThis Enable debugging for current package
  * @param options.quiet Quiet output
  * @return ViteDevServer
  */
 export const open = async (options: Partial<Options>): Promise<ViteServer> => {
-  const { log, root, quiet, file, responses, jsx } = (options = Object.assign(
+  const { log, root, quiet, file, responses, jsx, debugging, debuggingThis } = (options = Object.assign(
     new Options(),
     options
   ))
@@ -112,15 +120,21 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     exclude: [],
   }
 
-  const aliasPackage = () => {
+  const getPkgName = (): string | void => {
     try {
       const json = fs.readFileSync(path.resolve(path.join(root, 'package.json')), 'utf-8')
-
-      // try to alias package name as a top-level module
       const pkg = JSON.parse(json)
-      if ('name' in pkg) {
-        !quiet && log('aliasing:', chalk.cyan(pkg.name), '->', chalk.green(root))
-        ;(resolve.alias as any)[pkg.name] = root
+      return pkg.name
+    } catch {}
+  }
+
+  const aliasPackage = () => {
+    try {
+      // try to alias package name as a top-level module
+      const name = getPkgName()
+      if (name) {
+        !quiet && log('aliasing:', chalk.cyan(name), '->', chalk.green(root))
+        ;(resolve.alias as any)[name] = root
       }
     } catch {}
   }
@@ -253,7 +267,10 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
         filter: /\.(jsx|tsx)$/,
       }),
 
-      debug({ printId: true }),
+      debug({
+        printId: true,
+        debugMatcher: debuggingThis ? ((getPkgName() ?? '') + ':*') : debugging,
+      }),
 
       {
         name: 'configure-server',
