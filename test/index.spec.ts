@@ -28,6 +28,7 @@ describe('open(file)', () => {
   }
 
   beforeEach(() => {
+    // NOTE: comment out these to enable own test logs
     io.stdout.start()
     io.stderr.start()
   })

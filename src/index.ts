@@ -104,10 +104,26 @@ const html = (title: string, name: string) =>
  * @return ViteDevServer
  */
 export const open = async (options: Partial<Options>): Promise<ViteServer> => {
-  const { log, root, quiet, file, responses, jsx, debugging, debuggingThis } = (options = Object.assign(
-    new Options(),
-    options
-  ))
+  options = Object.assign(new Options(), options)
+
+  let { file } = options as Options
+
+  const { log, root, quiet, responses, jsx, debugging, debuggingThis } = options as Options
+
+  const extensions = ['.js', '.jsx', '.ts', '.tsx', '.md', '.html']
+  if (extensions.every(x => !file.endsWith(x))) {
+    for (const ext of extensions) {
+      if (fs.existsSync(path.join(root, file + ext))) {
+        file = file + ext
+        break
+      }
+    }
+  }
+
+  if (!fs.existsSync(path.join(root, file))) {
+    !quiet && log('File does not exist:', file)
+    process.exit(1)
+  }
 
   !quiet && log('starting...')
 
