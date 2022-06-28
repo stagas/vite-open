@@ -231,6 +231,14 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
                 allowDeclareFields: true,
               },
             ],
+            [
+              require('@babel/plugin-proposal-decorators'),
+              { legacy: true },
+            ],
+            [
+              require('@babel/plugin-proposal-class-properties'),
+              { loose: true },
+            ],
           ],
         },
         filter: /\.[jt]sx$/,
