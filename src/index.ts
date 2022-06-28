@@ -214,6 +214,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     resolve,
     plugins: [
       mdPlugin({ mode: [Mode.HTML] }),
+
       babel({
         babelConfig: {
           cwd: root,
@@ -247,7 +248,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
             ],
           ],
         },
-        filter: /\.[jt]sx$/,
+        filter: /\.(jsx|tsx)$/,
       }),
 
       debug({ printId: true }),

@@ -14,6 +14,7 @@
     "open",
     "file"
   ],
+  "types": "./dist/types/index.d.ts",
   "module": "dist/esm/index.js",
   "main": "dist/cjs/index.js",
   "bin": {
@@ -117,6 +118,5 @@
     "rollup-plugin-debug",
     "vite-open",
     "wtr-plugin-vite"
-  ],
-  "types": "./dist/types/index.d.ts"
+  ]
 }
