@@ -2,6 +2,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import chalk from '@stagas/chalk'
 import { arg } from 'decarg'
 import * as fs from 'fs'
+import openInEditor from 'open-in-editor-connect'
 import * as path from 'path'
 import qrcode from 'qrcode-terminal'
 import { InlineConfig as ViteConfig, mergeConfig, ViteDevServer } from 'vite'
@@ -246,6 +247,10 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       {
         name: 'configure-server',
         configureServer(server: ViteDevServer) {
+          server.middlewares.use(openInEditor('.', {
+            editor: { name: 'code' },
+          }))
+
           server.middlewares.use((req, res, next) => {
             res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
             res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')

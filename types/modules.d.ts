@@ -1,6 +1,8 @@
 // ambient types like:
 declare module 'qrcode-terminal'
 
+declare module 'open-in-editor-connect'
+
 declare module '*.md' {
   // "unknown" would be more detailed depends on how you structure frontmatter
   const attributes: Record<string, unknown>
