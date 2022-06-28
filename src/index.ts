@@ -303,6 +303,8 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   const server = await createViteServer(config)
 
+  server.log = log
+
   // logs
   !quiet && log('started - serving file:', chalk.yellow(file))
   !quiet && server.vite.printUrls()

@@ -14,6 +14,8 @@ export interface ViteServer {
   networkAddr: string
   /** The Vite dev server instance */
   vite: ViteDevServer
+  /** Log function */
+  log: (...args: unknown[]) => void
 }
 
 /**
@@ -48,5 +50,6 @@ export const createViteServer = async (viteConfig: ViteConfig = {}): Promise<Vit
     localAddr,
     networkAddr,
     vite: viteDevServer,
+    log: void 0 as never,
   }
 }
