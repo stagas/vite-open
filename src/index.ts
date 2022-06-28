@@ -5,9 +5,11 @@ import * as fs from 'fs'
 import openInEditor from 'open-in-editor-connect'
 import * as path from 'path'
 import qrcode from 'qrcode-terminal'
+import debug from 'rollup-plugin-debug'
 import { InlineConfig as ViteConfig, mergeConfig, ViteDevServer } from 'vite'
 import babel from 'vite-plugin-babel'
 import mdPlugin, { Mode } from 'vite-plugin-markdown'
+
 import { createViteServer, ViteServer } from './server'
 
 const defaultLog = (...args: unknown[]) => console.log(chalk.blueBright('[vite-open]'), ...args)
@@ -185,6 +187,9 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     logLevel: quiet ? 'silent' : 'info',
     clearScreen: false,
     optimizeDeps,
+    esbuild: {
+      legalComments: 'inline',
+    },
     server: {
       https: options.https,
       open: !options.noOpen,
@@ -244,6 +249,9 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
         },
         filter: /\.[jt]sx$/,
       }),
+
+      debug({ printId: true }),
+
       {
         name: 'configure-server',
         configureServer(server: ViteDevServer) {
