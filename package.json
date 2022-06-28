@@ -2,7 +2,7 @@
   "name": "vite-open",
   "author": "stagas",
   "short": "stagas/vite-open",
-  "description": "Opens a file in a Vite dev server.",
+  "description": "Open any file directly in a Vite dev server.",
   "version": "2.1.0",
   "license": "MIT",
   "repository": {
