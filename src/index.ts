@@ -2,15 +2,24 @@ import commonjs from '@rollup/plugin-commonjs'
 import chalk from '@stagas/chalk'
 import { arg } from 'decarg'
 import * as fs from 'fs'
+import type { ServerResponse } from 'http'
 import openInEditor from 'open-in-editor-connect'
 import * as path from 'path'
 import qrcode from 'qrcode-terminal'
 import debug from 'rollup-plugin-debug'
-import { InlineConfig as ViteConfig, mergeConfig, ViteDevServer } from 'vite'
+import { mergeConfig } from 'vite'
+import type { Connect, InlineConfig as ViteConfig, ViteDevServer } from 'vite'
 import babel from 'vite-plugin-babel'
 import mdPlugin, { Mode } from 'vite-plugin-markdown'
+import virtual from 'vite-plugin-virtual'
+
+export * from 'vite-plugin-virtual'
 
 import { createViteServer, ViteServer } from './server'
+
+export type { ViteServer }
+
+export let virtualPlugin: any
 
 const defaultLog = (...args: unknown[]) => console.log(chalk.blueBright('[vite-open]'), ...args)
 
@@ -44,7 +53,18 @@ export class Options {
   @arg('--quiet', 'Quiet output')
   quiet = false
 
-  responses: Record<string, { type: string; content: string }> = {}
+  virtual: Record<string, any> = {}
+
+  responses: Record<string, {
+    type?: string
+    content?: string
+    fn?: (
+      server: ViteDevServer,
+      req: Connect.IncomingMessage,
+      res: ServerResponse,
+      next: Connect.NextFunction,
+    ) => void
+  }> = {}
 
   viteOptions: Partial<ViteConfig> = {}
 }
@@ -114,17 +134,21 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   const { log, root, quiet, responses, jsx, debugging, debuggingThis } = options as Options
 
+  const exists = (filename: string) =>
+    (('/' + filename) in responses)
+    || fs.existsSync(path.join(root, filename))
+
   const extensions = ['.js', '.jsx', '.ts', '.tsx', '.md', '.html']
   if (extensions.every(x => !file.endsWith(x))) {
     for (const ext of extensions) {
-      if (fs.existsSync(path.join(root, file + ext))) {
+      if (exists(file + ext)) {
         file = file + ext
         break
       }
     }
   }
 
-  if (!fs.existsSync(path.join(root, file))) {
+  if (!exists(file)) {
     !quiet && log('File does not exist:', file)
     process.exit(1)
   }
@@ -216,127 +240,180 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     content: entryContents,
   }
 
-  const config = mergeConfig(options.viteOptions ?? {}, {
-    root,
-    logLevel: quiet ? 'silent' : 'info',
-    clearScreen: false,
-    optimizeDeps,
-    esbuild: {
-      legalComments: 'inline',
-    },
-    server: {
-      https: options.https,
-      open: !options.noOpen,
-      force: true,
-      cors: true,
-      host: true,
-      headers: options.https
-        ? {
-          'Cross-Origin-Opener-Policy': 'same-origin',
-          'Cross-Origin-Embedder-Policy': 'require-corp',
-        }
-        : {},
-      fs: {
-        allow: [
-          // allow parent enables module links to work
-          path.resolve(root, '..'),
-          path.resolve(path.dirname(require.resolve('github-markdown-css'))),
-        ],
-      },
-    },
-    build: {
-      target: 'esnext',
-    },
-    resolve,
-    plugins: [
-      mdPlugin({ mode: [Mode.HTML] }),
+  virtualPlugin = virtual(options.virtual)
 
-      babel({
-        babelConfig: {
-          cwd: root,
-          sourceMaps: 'inline',
-          plugins: [
-            [
-              require('@babel/plugin-transform-react-jsx'),
-              {
-                throwIfNamespace: false, // defaults to true
-                runtime: 'automatic', // defaults to classic
-                importSource: jsx, // defaults to react
-                useBuiltIns: true,
-                useSpread: true,
-              },
-            ],
-            [
-              require('@babel/plugin-transform-typescript'),
-              {
-                isTSX: true,
-                allExtensions: true,
-                allowDeclareFields: true,
-              },
-            ],
-            [
-              require('@babel/plugin-proposal-decorators'),
-              { legacy: true },
-            ],
-            [
-              require('@babel/plugin-proposal-class-properties'),
-              { loose: true },
-            ],
+  const config = mergeConfig(
+    options.viteOptions ?? {},
+    <ViteConfig> {
+      root,
+      logLevel: quiet ? 'silent' : 'info',
+      clearScreen: false,
+      optimizeDeps,
+      esbuild: {
+        legalComments: 'inline',
+        keepNames: true,
+      },
+      server: {
+        https: options.https,
+        open: !options.noOpen,
+        force: !options.noForce,
+        cors: true,
+        host: true,
+        headers: options.https
+          ? {
+            'Cross-Origin-Opener-Policy': 'same-origin',
+            'Cross-Origin-Embedder-Policy': 'require-corp',
+          }
+          : {},
+        fs: {
+          allow: [
+            // allow parent enables module links to work
+            path.resolve(root, '..'),
+            path.resolve(path.dirname(require.resolve('github-markdown-css'))),
           ],
         },
-        filter: /\.(jsx|tsx)$/,
-      }),
-
-      debug({
-        printId: true,
-        debugMatcher: debuggingThis ? ((getPkgName() ?? '') + ':*') : debugging,
-      }),
-
-      {
-        name: 'configure-server',
-        configureServer(server: ViteDevServer) {
-          server.middlewares.use(openInEditor('.', {
-            editor: { name: 'code' },
-          }))
-
-          server.middlewares.use((req, res, next) => {
-            // cross origin headers are ignored and show a warning
-            // on non-https origins
-            if (options.https) {
-              res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
-              res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
-            }
-
-            if (req.url! in responses) {
-              const { type, content } = responses[req.url!]
-              res.statusCode = 200
-              res.setHeader('Content-Type', type)
-              res.end(content)
-              return
-            }
-            if (isMarkdown && req.url === '/' + file) {
-              server.transformRequest(req.url).then(result => {
-                res.statusCode = 200
-                res.setHeader('Content-Type', 'application/javascript')
-                res.end(result!.code)
-              })
-              return
-            }
-            if (req.url === '/') {
-              res.statusCode = 200
-              server.transformIndexHtml(req.url, html(file, '_entry')).then(result => {
-                res.end(result)
-              })
-              return
-            }
-            next()
-          })
-        },
       },
+      build: {
+        target: 'esnext',
+      },
+      resolve,
+      plugins: [
+        virtualPlugin,
 
-      commonjs({ transformMixedEsModules: true }),
-    ],
-  } as ViteConfig)
+        mdPlugin({ mode: [Mode.HTML] }),
+
+        babel({
+          babelConfig: {
+            cwd: root,
+            sourceMaps: true,
+            plugins: [
+              [
+                require('@babel/plugin-transform-react-jsx'),
+                {
+                  throwIfNamespace: false, // defaults to true
+                  runtime: 'automatic', // defaults to classic
+                  importSource: jsx, // defaults to react
+                  useBuiltIns: true,
+                  useSpread: true,
+                },
+              ],
+              [
+                require('@babel/plugin-transform-typescript'),
+                {
+                  isTSX: true,
+                  allExtensions: true,
+                  allowDeclareFields: true,
+                },
+              ],
+              [
+                require('@babel/plugin-proposal-decorators'),
+                { legacy: true },
+              ],
+              [
+                require('@babel/plugin-proposal-class-properties'),
+                { loose: true },
+              ],
+              [
+                require('@babel/plugin-proposal-private-methods'),
+                { loose: true },
+              ],
+            ],
+          },
+          filter: /\.(jsx|tsx)$/,
+        }),
+
+        {
+          name: 'fix-babel-sourcemaps',
+          transform(_, id) {
+            if (id.endsWith('.tsx') || id.endsWith('.jsx')) {
+              const sourcemap = this.getCombinedSourcemap()
+              sourcemap.sources[0] = id
+            }
+            return null
+          },
+        },
+
+        debug({
+          printId: true,
+          runtimeDebug: true,
+          debugMatcher: debuggingThis ? ((getPkgName() ?? '') + ':*') : debugging,
+        }),
+
+        {
+          name: 'configure-server',
+          configureServer(server: ViteDevServer) {
+            // fix url devtools links for consuming by openInEditor
+            server.middlewares.use((req, _res, next) => {
+              if (req.method === 'POST' && req.url) {
+                if (/\/@fs\/.*:\d+/.test(req.url))
+                  req.url = req.url!.replace('/@fs', '')
+                else if (/.*:\d+/.test(req.url)) {
+                  if (!fs.existsSync(req.url.split(':')[0]))
+                    req.url = path.resolve(path.join(root, req.url))
+                }
+              }
+              next()
+            })
+
+            server.middlewares.use(openInEditor('/', {
+              editor: { name: 'code' },
+            }))
+
+            server.middlewares.use((req, res, next) => {
+              if (req.url === '/favicon.ico') {
+                res.setHeader('Content-Type', 'image/svg+xml')
+                res.end(
+                  /*html*/ `<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><circle cx='50' cy='47.2' r='34' fill='transparent' stroke='#fff' stroke-width='7.5' /></svg>`
+                )
+              } else {
+                next()
+              }
+            })
+
+            server.middlewares.use((req, res, next) => {
+              // cross origin headers are ignored and show a warning
+              // on non-https origins
+              if (options.https) {
+                res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
+                res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
+              }
+
+              if (req.url! in responses) {
+                const { type, content, fn } = responses[req.url!]
+                if (fn) {
+                  fn(server, req, res, next)
+                  return
+                } else if (content) {
+                  res.statusCode = 200
+                  res.setHeader('Content-Type', type ?? 'application/javascript')
+                  res.end(content)
+                }
+                return
+              }
+              if (isMarkdown && req.url === '/' + file) {
+                server.transformRequest(req.url).then(result => {
+                  res.statusCode = 200
+                  res.setHeader('Content-Type', 'application/javascript')
+                  res.end(result!.code)
+                })
+                return
+              }
+              if (req.url === '/') {
+                res.statusCode = 200
+                server.transformIndexHtml(req.url, html(file, '_entry')).then(result => {
+                  res.end(result)
+                })
+                return
+              }
+              next()
+            })
+          },
+        },
+
+        commonjs({ transformMixedEsModules: true }),
+      ],
+    } as ViteConfig
+  )
 
   const server = await createViteServer(config)
 
