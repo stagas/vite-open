@@ -32,6 +32,9 @@ export class Options {
   @arg('--no-open', 'Do not open browser on startup')
   noOpen = false
 
+  @arg('--no-force', 'Do not force reoptimization')
+  noForce = false
+
   @arg('--debugging', 'Debugging pattern')
   debugging = ''
 
@@ -98,6 +101,7 @@ const html = (title: string, name: string) =>
  * @param options.https Use https
  * @param options.jsx JSX transformer (default: react)
  * @param options.noOpen Do not open browser on startup
+ * @param options.noForce Do not force reoptimization
  * @param options.debugging Debugging pattern
  * @param options.debuggingThis Enable debugging for current package
  * @param options.quiet Quiet output
