@@ -1,4 +1,5 @@
 import chalk from '@stagas/chalk'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import { arg } from 'decarg'
 import * as fs from 'fs'
 import type { ServerResponse } from 'http'
@@ -23,25 +24,17 @@ export let virtualPlugin: any
 const defaultLog = (...args: unknown[]) => console.log(chalk.blueBright('[vite-open]'), ...args)
 
 export class Options {
-  log = defaultLog
-
   @arg('<file>', 'File to open (.js, .jsx, .ts, .tsx, .md)') file!: string
-
   @arg('--root', 'Root directory to serve files from') root = '.'
-
   @arg('--https', 'Use https') https = false
-
   @arg('--jsx', 'JSX transformer') jsx = 'react'
-
   @arg('--no-open', 'Do not open browser on startup') noOpen = false
-
   @arg('--no-force', 'Do not force reoptimization') noForce = false
-
   @arg('--debugging', 'Debugging pattern') debugging = ''
-
   @arg('--debugging-this', 'Enable debugging for current package') debuggingThis = false
-
   @arg('--quiet', 'Quiet output') quiet = false
+
+  log = defaultLog
 
   virtual: Record<string, any> = {}
 
@@ -271,6 +264,8 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       },
       resolve,
       plugins: [
+        options.https && basicSsl(),
+
         virtualPlugin,
 
         mdPlugin({ mode: [Mode.HTML] }),
