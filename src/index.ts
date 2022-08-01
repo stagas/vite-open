@@ -1,4 +1,3 @@
-import commonjs from '@rollup/plugin-commonjs'
 import chalk from '@stagas/chalk'
 import { arg } from 'decarg'
 import * as fs from 'fs'
@@ -233,6 +232,9 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   virtualPlugin = virtual(options.virtual)
 
+  optimizeDeps.include = []
+  optimizeDeps.force = !options.noForce
+
   const config = mergeConfig(
     options.viteOptions ?? {},
     <ViteConfig> {
@@ -243,11 +245,11 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
       esbuild: {
         legalComments: 'inline',
         keepNames: true,
+        jsx: 'automatic',
       },
       server: {
         https: options.https,
         open: !options.noOpen,
-        force: !options.noForce,
         cors: true,
         host: true,
         headers: options.https
@@ -400,8 +402,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
             })
           },
         },
-
-        commonjs({ transformMixedEsModules: true }),
+        // commonjs({ transformMixedEsModules: true }),
       ],
     } as ViteConfig
   )
