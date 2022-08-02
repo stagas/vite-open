@@ -227,6 +227,11 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
   optimizeDeps.include = []
   optimizeDeps.force = !options.noForce
+  optimizeDeps.esbuildOptions = {
+    target: 'es2020',
+    legalComments: 'inline',
+    keepNames: true,
+  }
 
   const config = mergeConfig(
     options.viteOptions ?? {},
