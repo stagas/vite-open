@@ -95,7 +95,7 @@
     "@stagas/chalk": "5.0.0",
     "@vitejs/plugin-basic-ssl": "0.1.1",
     "decarg": "^1.2.1",
-    "everyday-node": "^0.0.1",
+    "everyday-node": "^1.0.0",
     "github-markdown-css": "5.1.0",
     "open-in-editor-connect": "1.0.0",
     "qrcode-terminal": "0.12.0",
