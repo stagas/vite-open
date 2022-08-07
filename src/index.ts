@@ -233,6 +233,8 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
     keepNames: true,
   }
 
+  resolve.preserveSymlinks = true
+
   const config = mergeConfig(
     options.viteOptions ?? {},
     <ViteConfig> {
