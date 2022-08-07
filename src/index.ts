@@ -352,6 +352,7 @@ export const open = async (options: Partial<Options>): Promise<ViteServer> => {
 
             server.middlewares.use(openInEditor('/', {
               editor: { name: 'code' },
+              dotfiles: 'allow',
             }))
 
             server.middlewares.use((req, res, next) => {
